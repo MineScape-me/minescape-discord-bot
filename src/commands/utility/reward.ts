@@ -58,10 +58,8 @@ export async function execute(interaction: ChatInputCommandInteraction<CacheType
 		}
 
 		const uuid = results[0].uuid;
-
-		// Insert the UUID and token amount into the player_rewards table
-		const insertQuery = `INSERT INTO player_rewards (uuid, data) VALUES ('${uuid}', 'tokens give ${uuid} ${amount}')`;
-		connection.query(insertQuery, async (error) => {
+		const insertQuery = `INSERT INTO player_rewards (uuid, data) VALUES (?, ?)`;
+		connection.query(insertQuery, [uuid, `tokens give ${uuid} ${amount}`], async (error) => {
 			if (error) {
 				await interaction.reply({ content: 'Error rewarding player!', ephemeral: true });
 				return;
