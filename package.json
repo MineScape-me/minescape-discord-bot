@@ -1,0 +1,25 @@
+{
+  "name": "minescape-discord-bot",
+  "version": "1.0.0",
+  "author": "AshleyThew",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.1",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "@types/mysql": "^2.15.25",
+    "@types/node": "^20.11.13",
+    "eslint": "^8.56.0",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.0.1",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsup src/index.ts --minify"
+  }
+}
