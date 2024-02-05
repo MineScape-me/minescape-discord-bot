@@ -40,8 +40,8 @@ export async function execute(interaction: ChatInputCommandInteraction<CacheType
 	const amount = interaction.options.getInteger('amount');
 
 	// Get the UUID from the player_discord table using the Discord ID
-	const query = `SELECT uuid FROM player_discord WHERE discord_id = '${target?.id}'`;
-	connection.query(query, async (error, results) => {
+	const query = `SELECT uuid FROM player_discord WHERE discord_id = ?`;
+	connection.query(query, [target?.id], async (error, results) => {
 		if (error) {
 			console.log(error);
 			await interaction.reply({ content: 'Error reaching database!', ephemeral: true });
