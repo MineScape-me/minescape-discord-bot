@@ -2,7 +2,7 @@
   "name": "minescape-discord-bot",
   "version": "1.0.0",
   "author": "AshleyThew",
-  "license": "MIT",
+  "license": "CC BY-NC-ND 4.0",
   "dependencies": {
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.1",
