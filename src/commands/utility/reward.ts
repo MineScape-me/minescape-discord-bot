@@ -21,12 +21,12 @@ const updateTags = (interaction: ChatInputCommandInteraction<CacheType>, tagName
 		const tagToRemove = interaction.channel.parent.availableTags.find(tag => tag.name === tagNameToRemove);
 		var tags = interaction.channel.appliedTags;
 		let updated = false
-		if (tagToAdd) {
-			tags.push(tagToAdd.id);
-			updated = true;
-		}
 		if (tagToRemove) {
 			tags = tags.filter(tag => tag !== tagToRemove.id);
+			updated = true;
+		}
+		if (tagToAdd && tags.length < 5) {
+			tags.push(tagToAdd.id);
 			updated = true;
 		}
 		if(updated) {
