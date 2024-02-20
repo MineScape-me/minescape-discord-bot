@@ -1,4 +1,4 @@
-import mysql from 'mysql';
+import mysql, { QueryOptions, queryCallback } from 'mysql';
 import { config } from './config';
 const { mysqlHost, mysqlPort, mysqlDatabase, mysqlUsername, mysqlPassword } = config;
 
@@ -10,6 +10,28 @@ export const connection = mysql.createConnection({
     database: mysqlDatabase,
     password: mysqlPassword,
 });
+
+export const query = (options: string | QueryOptions, values: any, callback?: queryCallback) =>{
+    return connection.query(options, values, (error, results)=>{
+        if(error && error.code === 'ECONNRESET'){
+            console.log('MySQL connection lost. Reconnecting...');
+            connection.connect((connectError) => {
+                if(connectError){
+                    console.error('Error reconnecting to MySQL:', connectError);
+                    if (callback) {
+                        callback(error, results);
+                    }
+                } else {
+                    query(options, values, callback);
+                }
+            });
+            return;
+        }
+        if (callback) {
+            callback(error, results);
+        }
+    });
+}
 
 // Test the connection
 connection.connect((error) => {
