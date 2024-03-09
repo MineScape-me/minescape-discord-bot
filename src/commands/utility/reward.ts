@@ -49,11 +49,11 @@ export async function execute(interaction: ChatInputCommandInteraction<CacheType
 		}
 
 		// Check if the user exists in the player_discord table
-		if (results.length === 0) {
+		if (results.length === 0 || !results[0].uuid) {
 			updateTags(interaction, 'Awaiting Link', undefined);
 			const emoji = interaction.client.emojis.cache.get('555661945416581140');
 			await interaction.reply(`${target}, please link your account to recieve your reward ${emoji}`);
-			await interaction.followUp(`Follow the guide in the the <#683273758903107595> channel to link your account!`);
+			await interaction.followUp(`Follow the guide in the the <#683273758903107595> channel to link your account.`);
 			return;
 		}
 
