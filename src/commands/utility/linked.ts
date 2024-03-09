@@ -20,7 +20,7 @@ export async function execute(interaction: ChatInputCommandInteraction<CacheType
 
 		// Check if the user exists in the player_discord table
 		if (results.length === 0 || !results[0].uuid) {
-			await interaction.reply(`Follow the guide in the the <#683273758903107595> channel to link your account.`);
+			await interaction.reply({content: `Follow the guide in the the <#683273758903107595> channel to link your account.`, ephemeral: true});
 			return;
 		}
 
