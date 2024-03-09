@@ -4,6 +4,7 @@ import { query } from "../../database.js";
 export const data = new SlashCommandBuilder()
 	.setName('linked')
 	.setDescription('Check your linked account.')
+	.setDefaultMemberPermissions(PermissionFlagsBits.UseApplicationCommands)
 	.setDMPermission(false);
 
 
