@@ -76,7 +76,7 @@ async function lookupByUsername(interaction: ChatInputCommandInteraction<CacheTy
 	const target = interaction.options.getString('target', true);
 
 	// Get the UUID from the player_discord table using the Discord ID
-	const selectSql = `SELECT uuid FROM uuids WHERE username = ?;`;
+	const selectSql = `SELECT uuid FROM uuids WHERE username LIKE ?;`;
 	query(selectSql, [target], async (error, results) => {
 		if (error) {
 			console.log(error);
@@ -91,7 +91,7 @@ async function lookupByUsername(interaction: ChatInputCommandInteraction<CacheTy
 		}
 
 		const uuid = results[0].uuid;
-		const selectSql = `SELECT discord_id, discord_name FROM player_discord WHERE uuid = ?;`;
+		const selectSql = `SELECT discord_id, discord_name FROM player_discord WHERE uuid LIKE ?;`;
 		query(selectSql, [uuid], async (error, results) => {
 			if (error) {
 				console.log(error);
@@ -108,12 +108,12 @@ async function lookupByUsername(interaction: ChatInputCommandInteraction<CacheTy
 			}
 			var user = interaction.guild.members.cache.get(results[0].discord_id);
 			if(!user){
-				await interaction.reply({ content: `User ${target} is linked to ${results[0].discord_name} / ${results[0].discord_id}, but not found in guild.`, ephemeral: true });
+				await interaction.reply({ content: `User ${target}/${uuid} is linked to ${results[0].discord_name} / ${results[0].discord_id}, but not found in guild.`, ephemeral: true });
 				return;
 			
 			}
 			
-			await interaction.reply({ content: `User ${target} is linked to ${user.user.username} / ${results[0].discord_id} - <@${user.user.id}>`, ephemeral: true });
+			await interaction.reply({ content: `User ${target}/${uuid} is linked to ${user.user.username} / ${results[0].discord_id} - <@${user.user.id}>`, ephemeral: true });
 		});
 
 	});
