@@ -9,6 +9,8 @@ export const connection = mysql.createConnection({
     user: mysqlUsername,
     database: mysqlDatabase,
     password: mysqlPassword,
+    supportBigNumbers: true,
+    bigNumberStrings: true
 });
 
 export const query = (options: string | QueryOptions, values: any, callback?: queryCallback) =>{
