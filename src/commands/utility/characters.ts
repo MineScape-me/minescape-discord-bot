@@ -2,8 +2,8 @@ import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, 
 import { query } from "../../database.js";
 
 export const data = new SlashCommandBuilder()
-	.setName('lookup')
-	.setDescription('Lookup a users linked account.')
+	.setName('characters')
+	.setDescription('Lookup a users character ids.')
 	.addSubcommand(subcommand =>
 		subcommand
 		.setName('discord')
@@ -35,9 +35,9 @@ export async function execute(interaction: ChatInputCommandInteraction<CacheType
 			break;
 	
 	}
+	
 }
-
-async function lookupByDiscord(interaction: ChatInputCommandInteraction<CacheType>) {
+function lookupByDiscord(interaction: ChatInputCommandInteraction<CacheType>) {
 	const target = interaction.options.getUser('target', true);
 
 	// Get the UUID from the player_discord table using the Discord ID
@@ -56,7 +56,7 @@ async function lookupByDiscord(interaction: ChatInputCommandInteraction<CacheTyp
 		}
 
 		const uuid = results[0].uuid;
-		const selectSql = `SELECT username FROM uuids WHERE uuid = ?;`;
+		const selectSql = `SELECT selected FROM player_data WHERE uuid = ?;`;
 		query(selectSql, [uuid], async (error, results) => {
 			if (error) {
 				console.log(error);
@@ -64,13 +64,25 @@ async function lookupByDiscord(interaction: ChatInputCommandInteraction<CacheTyp
 				return;
 			}
 
-			await interaction.reply({ content: `User is linked to ${results[0].username} - ${uuid}`, ephemeral: true });
-		});
+			const selected = results[0].selected;
 
+			const selectSql = `SELECT * FROM character_ids WHERE uuid = ?;`;
+			query(selectSql, [uuid], async (error, results) => {
+				if (error) {
+					console.log(error);
+					await interaction.reply({ content: 'Error reaching database!', ephemeral: true });
+					return;
+				}
+	
+				await interaction.reply({ content: `User has the following character ids:\n${
+					results.map((result: any) => `${result.character_id} ${selected == result.character_id ? "(selected)" : ""}`).join('\n')
+				}`, ephemeral: true });
+			});	
+		});
 	});
 }
 
-async function lookupByUsername(interaction: ChatInputCommandInteraction<CacheType>) {
+function lookupByUsername(interaction: ChatInputCommandInteraction<CacheType>) {
 	const target = interaction.options.getString('target', true);
 
 	// Get the UUID from the player_discord table using the Discord ID
@@ -84,12 +96,12 @@ async function lookupByUsername(interaction: ChatInputCommandInteraction<CacheTy
 
 		// Check if the user exists in the player_discord table
 		if (results.length === 0 || !results[0].uuid) {
-			await interaction.reply({ content: 'User has not joined the server.', ephemeral: true });
+			await interaction.reply({ content: 'User is not linked.', ephemeral: true });
 			return;
 		}
 
 		const uuid = results[0].uuid;
-		const selectSql = `SELECT discord_id, discord_name FROM player_discord WHERE uuid = ?;`;
+		const selectSql = `SELECT selected FROM player_data WHERE uuid = ?;`;
 		query(selectSql, [uuid], async (error, results) => {
 			if (error) {
 				console.log(error);
@@ -97,14 +109,21 @@ async function lookupByUsername(interaction: ChatInputCommandInteraction<CacheTy
 				return;
 			}
 
-			if(results.length === 0 || !results[0].discord_id) {
-				await interaction.reply({ content: `User ${target} has not linked their account.`, ephemeral: true });
-				return;
-			}
+			const selected = results[0].selected;
 
-			await interaction.reply({ content: `User ${target} is linked to ${results[0].discord_name} - <@${results[0].discord_id}>`, ephemeral: true });
+			const selectSql = `SELECT * FROM character_ids WHERE uuid = ?;`;
+			query(selectSql, [uuid], async (error, results) => {
+				if (error) {
+					console.log(error);
+					await interaction.reply({ content: 'Error reaching database!', ephemeral: true });
+					return;
+				}
+	
+				await interaction.reply({ content: `User has the following character ids:\n${
+					results.map((result: any) => `${result.character_id} ${selected == result.character_id ? "(selected)" : ""}`).join('\n')
+				}`, ephemeral: true });
+			});	
 		});
-
 	});
 }
 
