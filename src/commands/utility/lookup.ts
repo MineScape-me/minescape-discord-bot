@@ -71,6 +71,8 @@ async function lookupByDiscord(interaction: ChatInputCommandInteraction<CacheTyp
 }
 
 async function lookupByUsername(interaction: ChatInputCommandInteraction<CacheType>) {
+
+
 	const target = interaction.options.getString('target', true);
 
 	// Get the UUID from the player_discord table using the Discord ID
@@ -101,8 +103,17 @@ async function lookupByUsername(interaction: ChatInputCommandInteraction<CacheTy
 				await interaction.reply({ content: `User ${target} has not linked their account.`, ephemeral: true });
 				return;
 			}
-
-			await interaction.reply({ content: `User ${target} is linked to ${results[0].discord_name} - <@${results[0].discord_id}>`, ephemeral: true });
+			if(!interaction.guild){
+				return;
+			}
+			var user = interaction.guild.members.cache.get(results[0].discord_id);
+			if(!user){
+				await interaction.reply({ content: `User ${target} is linked to ${results[0].discord_name}, but not found in guild.}`, ephemeral: true });
+				return;
+			
+			}
+			
+			await interaction.reply({ content: `User ${target} is linked to ${user.user.username} - <@${user.user.id}>`, ephemeral: true });
 		});
 
 	});
