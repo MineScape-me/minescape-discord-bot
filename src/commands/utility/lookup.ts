@@ -106,7 +106,7 @@ async function lookupByUsername(interaction: ChatInputCommandInteraction<CacheTy
 			if(!interaction.guild){
 				return;
 			}
-			console.log(JSON.stringify(results));
+			
 			var user = interaction.guild.members.cache.get(results[0].discord_id);
 			if(!user){
 				await interaction.reply({ content: `User ${target}/${uuid} is linked to ${results[0].discord_name} / ${results[0].discord_id}, but not found in guild.`, ephemeral: true });

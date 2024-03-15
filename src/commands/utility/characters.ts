@@ -37,7 +37,8 @@ export async function execute(interaction: ChatInputCommandInteraction<CacheType
 	}
 	
 }
-function lookupByDiscord(interaction: ChatInputCommandInteraction<CacheType>) {
+
+async function lookupByDiscord(interaction: ChatInputCommandInteraction<CacheType>) {
 	const target = interaction.options.getUser('target', true);
 
 	// Get the UUID from the player_discord table using the Discord ID
@@ -73,16 +74,15 @@ function lookupByDiscord(interaction: ChatInputCommandInteraction<CacheType>) {
 					await interaction.reply({ content: 'Error reaching database!', ephemeral: true });
 					return;
 				}
-	
 				await interaction.reply({ content: `User has the following character ids:\n${
-					results.map((result: any) => `${result.character_id} ${selected == result.character_id ? "(selected)" : ""}`).join('\n')
+					results.map((result: any) => `${result.id} ${selected == result.id ? "(selected)" : ""}`).join('\n')
 				}`, ephemeral: true });
 			});	
 		});
 	});
 }
 
-function lookupByUsername(interaction: ChatInputCommandInteraction<CacheType>) {
+async function lookupByUsername(interaction: ChatInputCommandInteraction<CacheType>) {
 	const target = interaction.options.getString('target', true);
 
 	// Get the UUID from the player_discord table using the Discord ID
@@ -120,7 +120,7 @@ function lookupByUsername(interaction: ChatInputCommandInteraction<CacheType>) {
 				}
 	
 				await interaction.reply({ content: `User has the following character ids:\n${
-					results.map((result: any) => `${result.character_id} ${selected == result.character_id ? "(selected)" : ""}`).join('\n')
+					results.map((result: any) => `${result.id} ${selected == result.id ? "(selected)" : ""}`).join('\n')
 				}`, ephemeral: true });
 			});	
 		});

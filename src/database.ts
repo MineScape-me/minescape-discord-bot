@@ -49,7 +49,11 @@ connection.on('error', (error) => {
     console.log("CODE: " + error.code);
     if (error.code === 'ECONNRESET') {
         console.log('MySQL connection lost. Reconnecting...');
-        connection.connect();
+        connection.connect((connectError) => {
+            if(connectError){
+                console.error('Error reconnecting to MySQL:', connectError);
+            }
+        });
     } else {
         throw error;
     }
