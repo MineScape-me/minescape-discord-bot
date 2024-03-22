@@ -99,7 +99,7 @@ async function lookupByUsername(interaction: ChatInputCommandInteraction<CacheTy
 				return;
 			}
 
-			if(results.length === 0 || !results[0].discord_id) {
+			if(results.length === 0 || results[0].discord_id == 0) {
 				await interaction.reply({ content: `User ${target} has not linked their account.`, ephemeral: true });
 				return;
 			}
@@ -111,7 +111,6 @@ async function lookupByUsername(interaction: ChatInputCommandInteraction<CacheTy
 			if(!user){
 				await interaction.reply({ content: `User ${target}/${uuid} is linked to ${results[0].discord_name} / ${results[0].discord_id}, but not found in guild.`, ephemeral: true });
 				return;
-			
 			}
 			
 			await interaction.reply({ content: `User ${target}/${uuid} is linked to ${user.user.username} / ${results[0].discord_id} - <@${user.user.id}>`, ephemeral: true });
