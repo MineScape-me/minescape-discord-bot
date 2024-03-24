@@ -48,9 +48,8 @@ export async function execute(interaction: ChatInputCommandInteraction<CacheType
 		const embed = new EmbedBuilder()
 			.setTitle(`Grand Exchange: ${capitalize(info.item.toLowerCase().replaceAll("_", " "))}`)
 			.setColor(0x00AE86)
-			.setTimestamp(info.last_update);
-		
-		embed.setThumbnail(`https://resourcepack.minescape.me/images/${info.item.toLowerCase()}.png`);
+			.setTimestamp(info.last_update)
+			.setThumbnail(`https://resourcepack.minescape.me/images/${info.item.toLowerCase()}.png`);
 
 		const bought = buyHistory.reduce((a, b) => a + b.amount, 0);
 		const boughtA = buyHistory.reduce((a, b) => a + (b.min + (b.max - b.min)/2), 0) / buyHistory.length;

@@ -5,6 +5,7 @@ import * as linked from "./utility/linked";
 import * as characters from "./utility/characters";
 import * as top from "./skills/top";
 import * as ge from "./skills/ge";
+import * as info from "./skills/info";
 
 export const commands = {
   zing,
@@ -13,6 +14,7 @@ export const commands = {
   linked,
   characters,
   top,
-  ge
+  ge,
+  info
 };
 
