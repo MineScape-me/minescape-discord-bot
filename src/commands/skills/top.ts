@@ -113,7 +113,6 @@ async function handleLevel(interaction: ChatInputCommandInteraction<CacheType>) 
 			console.error(error);
 			return interaction.editReply({ content: 'No results found.'});
 		}
-		console.log(results)
 		handleResult(interaction, "level", results, offset);
 	});
 }

@@ -16,7 +16,8 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
 	await interaction.deferReply();
-	const item = interaction.options.getString('item', true).toUpperCase().replace(' ', '_');
+	const input = interaction.options.getString('item', true);
+	const item = input.toUpperCase().replace(' ', '_');
 	const selectSql = `SELECT * FROM grandexchange_guide_price WHERE item LIKE ? LIMIT 10;`;
 	queryCall(selectSql, [item], async (error, results) => {
 		if (error || !results) {
@@ -28,10 +29,10 @@ export async function execute(interaction: ChatInputCommandInteraction<CacheType
 		if (results.length === 0) {
 			results = await query(`SELECT * FROM grandexchange_guide_price WHERE item LIKE ? LIMIT 10;`, [`%${item}%`]).catch(console.error);
 			if (!results || results.length === 0){
-				await interaction.editReply({ content: `No results found for ${item}.` });
+				await interaction.editReply({ content: `No results found for ${input}.` });
 				return;
 			}
-			await interaction.editReply({ content: `No results found for ${item}, did you mean:` });
+			await interaction.editReply({ content: `No results found for ${input}, did you mean:` });
 			await interaction.followUp({ content: `\u200b${results.map((result: any) => capitalize(result.item.toLowerCase().replaceAll("_", " "))).join('\n')}`, ephemeral: true });
 			return;
 		}
