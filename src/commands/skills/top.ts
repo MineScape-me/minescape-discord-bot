@@ -82,10 +82,10 @@ const selectTop = `SELECT ${getLevel}, ${getExp}, minescape.character_ids.uuid, 
 			WHERE cache.hiscores_normal_exp.id = minescape.character_ids.id \
 			AND cache.hiscores_normal_exp.id = cache.hiscores_normal_level.id \
 			AND minescape.character_ids.uuid = minescape.uuids.uuid \
-			ORDER BY $1 DESC LIMIT ? OFFSET ?;`;
+			ORDER BY ? DESC LIMIT ? OFFSET ?;`;
 
 async function handleTotal(interaction: ChatInputCommandInteraction<CacheType>) {
-	interaction.deferReply();
+	await interaction.deferReply();
 	const page = Math.max(0, interaction.options.getInteger('page') || 1);
 	const perPage = 12;
 	const offset = (page - 1) * perPage;
@@ -101,7 +101,7 @@ async function handleTotal(interaction: ChatInputCommandInteraction<CacheType>) 
 
 
 async function handleLevel(interaction: ChatInputCommandInteraction<CacheType>) {
-	interaction.deferReply();
+	await interaction.deferReply();
 	const page = Math.max(0, interaction.options.getInteger('page') || 1);
 	const perPage = 12;
 	const offset = (page - 1) * perPage;
@@ -117,7 +117,7 @@ async function handleLevel(interaction: ChatInputCommandInteraction<CacheType>) 
 }
 
 async function handleSkill(interaction: ChatInputCommandInteraction<CacheType>, skill: string) {
-	interaction.deferReply();
+	await interaction.deferReply();
 
 	const page = Math.max(0, interaction.options.getInteger('page') || 1);
 	const perPage = 12;
