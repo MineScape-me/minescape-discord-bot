@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, CacheType, ThreadChannel, ForumChannel, ThreadOnlyChannel } from "discord.js";
-import { query } from "../../database.js";
+import { queryCall } from "../../database.js";
 
 export const data = new SlashCommandBuilder()
 	.setName('reward')
@@ -41,7 +41,7 @@ export async function execute(interaction: ChatInputCommandInteraction<CacheType
 
 	// Get the UUID from the player_discord table using the Discord ID
 	const selectSql = `SELECT uuid FROM player_discord WHERE discord_id = ?`;
-	query(selectSql, [target?.id], async (error, results) => {
+	queryCall(selectSql, [target?.id], async (error, results) => {
 		if (error) {
 			console.log(error);
 			await interaction.reply({ content: 'Error reaching database!', ephemeral: true });
@@ -59,7 +59,7 @@ export async function execute(interaction: ChatInputCommandInteraction<CacheType
 
 		const uuid = results[0].uuid;
 		const insertQuery = `INSERT INTO player_rewards (uuid, data) VALUES (?, ?)`;
-		query(insertQuery, [uuid, `tokens give ${uuid} ${amount}`], async (error) => {
+		queryCall(insertQuery, [uuid, `tokens give ${uuid} ${amount}`], async (error) => {
 			if (error) {
 				await interaction.reply({ content: 'Error rewarding player!', ephemeral: true });
 				return;

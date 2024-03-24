@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-import { Client, Events, GatewayIntentBits, REST, Routes } from 'discord.js';
+import { AutocompleteInteraction, CacheType, Client, Events, GatewayIntentBits, REST, Routes } from 'discord.js';
 import { config } from './config.js';
 import { commands } from './commands/commands.js'
 
@@ -36,13 +36,19 @@ client.once(Events.ClientReady, readyClient => {
 });
 
 client.on(Events.InteractionCreate, async interaction => {
-	if (!interaction.isChatInputCommand()) {
-		return;
+	if(interaction.isChatInputCommand()) {
+		const { commandName } = interaction;
+		if (commands[commandName as keyof typeof commands]) {
+			(commands[commandName as keyof typeof commands]).execute(interaction);
+		}
+	} else if (interaction.isAutocomplete()) {
+		const { commandName } = interaction;
+		const command = commands[commandName as keyof typeof commands] as { autocomplete?: (interaction: AutocompleteInteraction<CacheType>) => void };
+		if (command && command.autocomplete) {
+			command.autocomplete(interaction);
+		}
 	}
-	const { commandName } = interaction;
-	if (commands[commandName as keyof typeof commands]) {
-		commands[commandName as keyof typeof commands].execute(interaction);
-	}
+
 });
 
 // Log in to Discord with your client's token

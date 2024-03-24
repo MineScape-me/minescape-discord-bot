@@ -12,11 +12,24 @@ export const connection = mysql.createPool({
     bigNumberStrings: true
 });
 
-export const query = (options: string | QueryOptions, values: any, callback?: queryCallback) =>{
+export const queryCall = (options: string | QueryOptions, values: any, callback?: queryCallback) =>{
     return connection.query(options, values, (error, results)=>{
         if (callback) {
             callback(error, results);
         }
+    });
+}
+
+
+export const query = (options: string | QueryOptions, values: any): Promise<any[]> =>{
+    return new Promise((resolve, reject) => {
+        connection.query(options, values, (error, results)=>{
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
     });
 }
 

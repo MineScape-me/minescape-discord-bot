@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, CacheType, ThreadChannel, ForumChannel, ThreadOnlyChannel } from "discord.js";
-import { query } from "../../database.js";
+import { queryCall } from "../../database.js";
 
 export const data = new SlashCommandBuilder()
 	.setName('characters')
@@ -43,7 +43,7 @@ async function lookupByDiscord(interaction: ChatInputCommandInteraction<CacheTyp
 
 	// Get the UUID from the player_discord table using the Discord ID
 	const selectSql = `SELECT uuid FROM player_discord WHERE discord_id = ?;`;
-	query(selectSql, [target.id], async (error, results) => {
+	queryCall(selectSql, [target.id], async (error, results) => {
 		if (error) {
 			console.log(error);
 			await interaction.reply({ content: 'Error reaching database!', ephemeral: true });
@@ -58,7 +58,7 @@ async function lookupByDiscord(interaction: ChatInputCommandInteraction<CacheTyp
 
 		const uuid = results[0].uuid;
 		const selectSql = `SELECT selected FROM player_data WHERE uuid = ?;`;
-		query(selectSql, [uuid], async (error, results) => {
+		queryCall(selectSql, [uuid], async (error, results) => {
 			if (error) {
 				console.log(error);
 				await interaction.reply({ content: 'Error reaching database!', ephemeral: true });
@@ -68,7 +68,7 @@ async function lookupByDiscord(interaction: ChatInputCommandInteraction<CacheTyp
 			const selected = results[0].selected;
 
 			const selectSql = `SELECT * FROM character_ids WHERE uuid = ?;`;
-			query(selectSql, [uuid], async (error, results) => {
+			queryCall(selectSql, [uuid], async (error, results) => {
 				if (error) {
 					console.log(error);
 					await interaction.reply({ content: 'Error reaching database!', ephemeral: true });
@@ -87,7 +87,7 @@ async function lookupByUsername(interaction: ChatInputCommandInteraction<CacheTy
 
 	// Get the UUID from the player_discord table using the Discord ID
 	const selectSql = `SELECT uuid FROM uuids WHERE username = ?;`;
-	query(selectSql, [target], async (error, results) => {
+	queryCall(selectSql, [target], async (error, results) => {
 		if (error) {
 			console.log(error);
 			await interaction.reply({ content: 'Error reaching database!', ephemeral: true });
@@ -102,7 +102,7 @@ async function lookupByUsername(interaction: ChatInputCommandInteraction<CacheTy
 
 		const uuid = results[0].uuid;
 		const selectSql = `SELECT selected FROM player_data WHERE uuid = ?;`;
-		query(selectSql, [uuid], async (error, results) => {
+		queryCall(selectSql, [uuid], async (error, results) => {
 			if (error) {
 				console.log(error);
 				await interaction.reply({ content: 'Error reaching database!', ephemeral: true });
@@ -112,7 +112,7 @@ async function lookupByUsername(interaction: ChatInputCommandInteraction<CacheTy
 			const selected = results[0].selected;
 
 			const selectSql = `SELECT * FROM character_ids WHERE uuid = ?;`;
-			query(selectSql, [uuid], async (error, results) => {
+			queryCall(selectSql, [uuid], async (error, results) => {
 				if (error) {
 					console.log(error);
 					await interaction.reply({ content: 'Error reaching database!', ephemeral: true });
