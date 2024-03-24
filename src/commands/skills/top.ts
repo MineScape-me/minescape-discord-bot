@@ -158,7 +158,7 @@ async function handleResult(interaction: ChatInputCommandInteraction<CacheType>,
 			level = result.level;
 			val = 'total';
 		}else{
-			level = getLevelIndex(result[type]);
+			level = getLevelIndex(result[type]) + 1;
 		}
 		const number = index + 1 + offset;
 		embed.addFields({name: `${number}. \`\`\`${result.username}\`\`\``, value: `${emoji} Level: ${level} [${formatNumber(result[val])}]`, inline: true});

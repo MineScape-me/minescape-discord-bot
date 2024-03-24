@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, CacheType, ThreadChannel, ForumChannel, ThreadOnlyChannel, EmbedBuilder } from "discord.js";
 import { queryCall } from "../../database.js";
-import { skills, capitalize, formatNumber } from "../../util/skills.js";
+import { skills, capitalize, formatNumber, emojis, getLevelIndex } from "../../util/skills.js";
 
 export const data = new SlashCommandBuilder()
 	.setName('info')
@@ -57,56 +57,15 @@ export async function execute(interaction: ChatInputCommandInteraction<CacheType
 			.setTimestamp();
 		let totalLevel = 0;
 		for (let skill of skills) {
-			let level = Math.floor(info[skill]);
+			let level = getLevelIndex(info[skill]) + 1;
 			let exp = Math.floor(info[skill]);
-			let header = `${capitalize(skill)}: ${level}`;
+			const emoji = emojis[skill as keyof typeof emojis];
+			let header = `${emoji} ${capitalize(skill)}: ${level}`;
 			totalLevel += level;
 			embed.addFields({ name: header, value: formatNumber(exp), inline: true });
 		}
-		embed.addFields({ name: `Total: ${totalLevel}`, value: formatNumber(Math.floor(info["total"])), inline: true });
+		embed.addFields({ name: `${emojis['total']}Total: ${totalLevel}`, value: formatNumber(Math.floor(info["total"])), inline: true });
 		await interaction.editReply({ embeds: [embed] });
-	// 	let json = data;
-	// let value = 0;
-	// if(character){
-	// 	value = Number(character) - 1;
-	// }
-	// if(value >= json.value.length){
-	// 	value = json.value.length - 1;
-	// }
-	// if(value < 0){
-	// 	value = 0;
-	// }
-    // if(json.completed == true){
-    //   const embed = new Discord.EmbedBuilder()
-    //   .setTitle("Levels for " + json.value[value].username + " " + (value+1) + "/" + json.value.length)
-    //   /*
-    //          * Alternatively, use "#00AE86", [0, 174, 134] or an integer number.
-    //          */
-    //   .setColor(0x00AE86)
-    //   /*
-    //          * Takes a Date object, defaults to current date.
-    //          */
-    //   .setTimestamp()
-    //   let values = json.value[value];
-    //   let totalLevel = 0;
-    //   for (let emoji in Strings.emojis) {
-	// 	if(emoji == 'level'){
-	// 		continue;
-	// 	}
-    //     let skill = emoji.charAt(0).toUpperCase() + emoji.slice(1);
-    //     let levelNumber = getLevel(values[emoji], 1);
-    //     let header = "";
-    //     header += getEmoji(emoji) + " ";
-    //     header += skill;
-    //     if(skill == 'Total'){
-    //       header += ': ' + totalLevel;
-    //       embed.addFields({name: header, value: formatNumber(Math.floor(values[emoji])), inline: true});
-    //       continue;
-    //     }
-    //     totalLevel += levelNumber;
-    //     header += ': ' + levelNumber;
-    //     embed.addFields({name: header, value: formatNumber(Math.floor(values[emoji])), inline: true});
-    //   }
-    //   return embed;
+
 	});
 }
