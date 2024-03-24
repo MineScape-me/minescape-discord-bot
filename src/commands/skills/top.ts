@@ -74,7 +74,8 @@ export async function execute(interaction: ChatInputCommandInteraction<CacheType
 let getLevel = "(" + skills.map(skill => `cache.hiscores_normal_level.${skill}`).join(" + ") + ") as level";
 let getExp = "(" + skills.map(skill => `cache.hiscores_normal_exp.${skill}`).join(" + ") + ") as total";
 
-const selectTop = `SELECT ${getLevel}, ${getExp}, minescape.character_ids.uuid, minescape.uuids.username FROM \
+function getTop(type: string, perPage: number, offset: number) {
+	return `SELECT ${getLevel}, ${getExp}, minescape.character_ids.uuid, minescape.uuids.username FROM \
 			cache.hiscores_normal_exp, \
 			cache.hiscores_normal_level, \
 			minescape.character_ids, \
@@ -82,7 +83,8 @@ const selectTop = `SELECT ${getLevel}, ${getExp}, minescape.character_ids.uuid, 
 			WHERE cache.hiscores_normal_exp.id = minescape.character_ids.id \
 			AND cache.hiscores_normal_exp.id = cache.hiscores_normal_level.id \
 			AND minescape.character_ids.uuid = minescape.uuids.uuid \
-			ORDER BY ? DESC LIMIT ? OFFSET ?;`;
+			ORDER BY ${type} DESC LIMIT ${perPage} OFFSET ${offset};`;
+}
 
 async function handleTotal(interaction: ChatInputCommandInteraction<CacheType>) {
 	await interaction.deferReply();
@@ -90,7 +92,7 @@ async function handleTotal(interaction: ChatInputCommandInteraction<CacheType>) 
 	const perPage = 12;
 	const offset = (page - 1) * perPage;
 
-	queryCall(selectTop, ["total", perPage, offset], (error, results) => {
+	queryCall(getTop("total", perPage, offset), [], (error, results) => {
 		if(error || !results.length){
 			console.error(error);
 			return interaction.editReply({ content: 'No results found.'});
@@ -105,8 +107,8 @@ async function handleLevel(interaction: ChatInputCommandInteraction<CacheType>) 
 	const page = Math.max(0, interaction.options.getInteger('page') || 1);
 	const perPage = 12;
 	const offset = (page - 1) * perPage;
-
-	queryCall(selectTop, ["level", perPage, offset], (error, results) => {
+	
+	queryCall(getTop("level", perPage, offset), [], (error, results) => {
 		if(error || !results.length){
 			console.error(error);
 			return interaction.editReply({ content: 'No results found.'});
