@@ -17,7 +17,7 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction: ChatInputCommandInteraction<CacheType>) {
 	await interaction.deferReply();
 	const input = interaction.options.getString('item', true);
-	const item = input.toUpperCase().replace(' ', '_');
+	const item = input.toUpperCase().replace(/ /g, '_');
 	const selectSql = `SELECT * FROM grandexchange_guide_price WHERE item LIKE ? LIMIT 10;`;
 	queryCall(selectSql, [item], async (error, results) => {
 		if (error || !results) {
