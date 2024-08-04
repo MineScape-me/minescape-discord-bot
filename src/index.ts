@@ -3,10 +3,11 @@ require('dotenv').config();
 import { AutocompleteInteraction, CacheType, Client, Events, GatewayIntentBits, REST, Routes } from 'discord.js';
 import { config } from './config.js';
 import { commands } from './commands/commands.js'
+import { handleDiscordMessage } from './chat.ts/chat.js';
 
 const { token, clientId, guildId } = config;
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
 // Construct and prepare an instance of the REST module
 const rest = new REST().setToken(token);
@@ -49,6 +50,14 @@ client.on(Events.InteractionCreate, async interaction => {
 		}
 	}
 
+});
+
+client.on(Events.MessageCreate, async message => {
+	if (message.author.bot) return;
+	if(message.guildId !== guildId) return;
+	if(message.channelId === '621864428077580288'){
+		handleDiscordMessage(message);
+	}
 });
 
 // Log in to Discord with your client's token

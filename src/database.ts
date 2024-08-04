@@ -1,6 +1,7 @@
 import mysql, { QueryOptions, queryCallback } from 'mysql';
 import { config } from './config';
 const { mysqlHost, mysqlPort, mysqlDatabase, mysqlUsername, mysqlPassword } = config;
+import redis from './redis';
 
 export const connection = mysql.createPool({
     host: mysqlHost,
