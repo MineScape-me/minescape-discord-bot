@@ -160,7 +160,7 @@ async function handleResult(interaction: ChatInputCommandInteraction<CacheType>,
 			level = getLevelIndex(result[type]) + 1;
 		}
 		const number = index + 1 + offset;
-		embed.addFields({name: `${number}. \`\`\`${result.username}\`\`\``, value: `${emoji} Level: ${level} [${formatNumber(result[val])}]`, inline: true});
+		embed.addFields({name: `${number}. \`\`\`${result.username}\`\`\``, value: `${emoji} Level: ${level}\n[${formatNumber(result[val])}]`, inline: true});
 	});
 	interaction.editReply({ embeds: [embed] });
 }
