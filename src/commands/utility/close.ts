@@ -23,13 +23,29 @@ const applyClosedTag = (
     const closedTag = interaction.channel.parent.availableTags.find(
       (tag) => tag.name === 'Closed'
     );
-    if (closedTag) {
-      let tags = interaction.channel.appliedTags;
-      if (tags.length < 5 && !tags.includes(closedTag.id)) {
-        tags.push(closedTag.id);
-        interaction.channel.setAppliedTags(tags);
-      }
+    const paidTag = interaction.channel.parent.availableTags.find(
+      (tag) => tag.name === 'Paid'
+    );
+
+    // Check if current tags include "Paid"
+    const currentTags = interaction.channel.appliedTags;
+    const hasPaidTag = paidTag && currentTags.includes(paidTag.id);
+
+    // Create new tags array
+    const newTags: string[] = [];
+
+    // Add Paid tag if it existed
+    if (hasPaidTag && paidTag) {
+      newTags.push(paidTag.id);
     }
+
+    // Add Closed tag if it exists
+    if (closedTag && newTags.length < 5) {
+      newTags.push(closedTag.id);
+    }
+
+    // Apply the new tags
+    interaction.channel.setAppliedTags(newTags);
   }
 };
 
