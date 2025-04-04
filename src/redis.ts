@@ -15,7 +15,8 @@ const subscriberClient = createClient({
 });
 
 // Connect to Redis (publisher)
-publisherClient.connect()
+publisherClient
+  .connect()
   .then(() => {
     console.log('Connected to Redis (publisher)!');
   })
@@ -24,7 +25,8 @@ publisherClient.connect()
   });
 
 // Connect to Redis (subscriber)
-subscriberClient.connect()
+subscriberClient
+  .connect()
   .then(() => {
     console.log('Connected to Redis (subscriber)!');
   })
@@ -32,13 +34,20 @@ subscriberClient.connect()
     console.error('Could not connect to Redis (subscriber)', err);
   });
 
-export const publishMessage = async (channel: string, message: string): Promise<void> => {
-  try {
-    await publisherClient.publish(channel, message);
-    console.log(`Message published to channel ${channel}: ${message}`);
-  } catch (err) {
-    console.error('Error publishing message to Redis', err);
-  }
+export const publishMessage = async (
+  channel: string,
+  message: string
+): Promise<void> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await publisherClient.publish(channel, message);
+      console.log(`Message published to channel ${channel}: ${message}`);
+      resolve();
+    } catch (err) {
+      console.error('Error publishing message to Redis', err);
+      reject(err);
+    }
+  });
 };
 
 // /**
